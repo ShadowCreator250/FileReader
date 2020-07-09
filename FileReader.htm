@@ -1,0 +1,68 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileReader</title>
+</head>
+
+<body onload="readTextFile2('./txt.txt');">
+    <div>
+        <h1>Text File Reader</h1>
+        <form>
+            Select a text file:
+            <input type="file" id="fileInput" onchange="readTextFile1();">
+        </form>
+        <BR><BR>
+        <fieldset>
+            <legend>File Display Area</legend>
+            <form id="fileDisplayArea">
+            </form>
+        </fieldset>
+        <br>
+        <div id="content" style="border: 2px black solid; padding: 4px;"></div>
+    </div>
+    <script>
+        var fileInput = document.getElementById('fileInput');
+        var fileDisplayArea = fileDisplayArea = document.getElementById('fileDisplayArea');
+
+        function readTextFile1() {
+            var file = fileInput.files[0];
+            var textType = /text.*/;
+
+            if (file.type.match(textType)) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    fileDisplayArea.innerText = reader.result;
+                }
+
+                reader.readAsText(file);
+            } else {
+                fileDisplayArea.innerText = "File not supported!"
+            }
+        }
+
+        function readTextFile2(file) {
+            var rawFile;
+            if (navigator.appName.search('Microsoft') > -1) {
+                rawFile = new ActiveXObject('MSXML2.XMLHTTP');
+            } else {
+                rawFile = new XMLHttpRequest();
+            }
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function () {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status === 200 || rawFile.status == 0) {
+                        console.log(rawFile);
+                        var el = document.getElementById('content');
+                        el.innerHTML = rawFile.responseText;
+                    }
+                }
+            }
+            rawFile.send(null);
+        }
+    </script>
+</body>
+
+</html>
